@@ -59,3 +59,19 @@ def when_iss_passed(station, lat2, lon2, radius=0):
     return ind
 WIP = np.vectorize(when_iss_passed)
 WIP(site, lat, lon, 200)
+
+
+
+
+
+def when_iss_passed(station, iss_track, radius=0):
+    lat1 = np.deg2rad(station.lat)
+    lon1 = np.deg2rad(station.lon)
+    ind = []
+    for i in iss_track.index[:]:
+        item = iss_track.loc[i]
+        lat2 = item.lat_rad
+        lon2 = item.lon_rad
+        h = Haversine(lat1, lon1, lat2, lon2, radius)
+        if (h == True): ind.append(i)
+    return ind

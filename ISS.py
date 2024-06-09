@@ -61,11 +61,14 @@ def sat_el_az (station, day, station_data, **kwargs):
     return sat
 
 
-def get_crossections(satellite, station, station_data, day, **kwargs):
-    gnss_type = kwargs.get('gnss_type', 'G')
+def get_crossections(satellite, station, station_data, day, **kwargs): 
     nav_folder = kwargs.get('nav_folder', 'C:/Users/')
     day2 = day.strftime('%j')
     h = kwargs.get('h', 455)
+    if gnss_type == 'G':
+        nav_file = nav_folder + '/brdc' + day2 + '0.' + day.strftime('%y') + 'n'
+    if gnss_type == 'R':
+        nav_file = nav_folder + '/brdc' + day2 + '0.' + day.strftime('%y') + 'g'
     site_xyz = station['xyz']
     time = station_data.index
     time = pd.to_datetime(time)
@@ -80,28 +83,16 @@ def get_crossections(satellite, station, station_data, day, **kwargs):
     ion_lat = list()
     ion_lon = list()
     ts = list()
-    if gnss_type == 'G':
-        nav_file = nav_folder + '/brdc' + day2 + '0.' + day.strftime('%y') + 'n'
-        for timestamp in time2[:]:
-            sat_xyz = satellite_xyz(nav_file, gnss_type, satellite, timestamp)
-            el, az = xyz_to_el_az(site_xyz, sat_xyz)
-            params = np.deg2rad(np.array((station['location']['lat'], station['location']['lon'], h, az, el)))
-            params[2] = h
-            lat, lon = sub_ionospheric(*params)
-            ion_lat.append(lat)
-            ion_lon.append(lon)
-            ts.append(timestamp)
-    if gnss_type == 'R':
-        nav_file = nav_folder + '/brdc' + day2 + '0.' + day.strftime('%y') + 'g'
-        for timestamp in time2[:]:
-            sat_xyz = satellite_xyz(nav_file, gnss_type, satellite, timestamp)
-            el, az = xyz_to_el_az(site_xyz, sat_xyz)
-            params = np.deg2rad(np.array((station['location']['lat'], station['location']['lon'], h, az, el)))
-            params[2] = h
-            lat, lon = sub_ionospheric(*params)
-            ion_lat.append(lat)
-            ion_lon.append(lon)
-            ts.append(timestamp)
+    for timestamp in time2[:]:
+        sat_xyz = satellite_xyz(nav_file, gnss_type, satellite, timestamp)
+        el, az = xyz_to_el_az(site_xyz, sat_xyz)
+        params = np.deg2rad(np.array((station['location']['lat'], station['location']['lon'], h, az, el)))
+        params[2] = h
+        lat, lon = sub_ionospheric(*params)
+        #lat, lon = sub_ionospheric(site_f['location']['lat'], site_f['location']['lon'], h, az, el)
+        ion_lat.append(lat)
+        ion_lon.append(lon)
+        ts.append(timestamp)
     df[col1] = np.rad2deg(ion_lat)
     df[col2] = np.rad2deg(ion_lon)
     df.index = ts

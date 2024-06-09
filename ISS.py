@@ -26,7 +26,6 @@ def when_iss_passed(station, iss_track, r = 0):
 
 
 def sat_el_az (station, day, station_data, **kwargs):
-#для конкретного дня определяет номера спутников, которые видны для конкретной станции в моменты времени пролета МКС и находятся выше 30 градусов
     gnss_type = kwargs.get('gnss_type', 'G')
     nav_folder = kwargs.get('nav_folder', 'C:/Users/')
     h = kwargs.get('h', 455)
@@ -63,7 +62,6 @@ def sat_el_az (station, day, station_data, **kwargs):
 
 
 def get_crossections(satellite, station, station_data, day, **kwargs):
-#для каждого спутника и конкретной станции расширяет временной диапазон -10 +30 минут, рассчитывает ионосферную точку и проводит отбор по расстоянию от точек трека
     gnss_type = kwargs.get('gnss_type', 'G')
     nav_folder = kwargs.get('nav_folder', 'C:/Users/')
     day2 = day.strftime('%j')
@@ -90,7 +88,6 @@ def get_crossections(satellite, station, station_data, day, **kwargs):
             params = np.deg2rad(np.array((station['location']['lat'], station['location']['lon'], h, az, el)))
             params[2] = h
             lat, lon = sub_ionospheric(*params)
-            #lat, lon = sub_ionospheric(site_f['location']['lat'], site_f['location']['lon'], h, az, el)
             ion_lat.append(lat)
             ion_lon.append(lon)
             ts.append(timestamp)
@@ -112,7 +109,6 @@ def get_crossections(satellite, station, station_data, day, **kwargs):
 
 
 def sort(ISS_lat_rad, ISS_lon_rad, df_gc, **kwargs):
-#возвращает датафрейм для конкретных спутников с координатами ионосферных точек, которые находились в радиусе 1000км от первой точки трека МКС
     radius = kwargs.get('radius', 1000)
     r = radius / (2 * 6371)
     df = df_gc[0]

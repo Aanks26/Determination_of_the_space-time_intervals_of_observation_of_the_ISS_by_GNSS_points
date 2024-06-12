@@ -6,7 +6,7 @@ from coordinates import satellite_xyz
 from sat_geometry_lite import xyz_to_el_az, sub_ionospheric
 
 def when_iss_passed(station, iss_track, r = 0):
-#djpdhfoftn rоординаты участков пересечения траектории движения МКС с областью заданного радиуса вокруг заданной станции
+#возвращает координаты участков пересечения траектории движения МКС с областью заданного радиуса вокруг заданной станции
     radius = r / (2 * 6371)
     s_lat = np.deg2rad(station.lat)
     s_lon = np.deg2rad(station.lon)

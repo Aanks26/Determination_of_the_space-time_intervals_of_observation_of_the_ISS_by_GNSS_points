@@ -93,7 +93,6 @@ def get_crossections(satellite, station, station_data, day, **kwargs):
             params = np.deg2rad(np.array((station['location']['lat'], station['location']['lon'], h, az, el)))
             params[2] = h
             lat, lon = sub_ionospheric(*params)
-            #lat, lon = sub_ionospheric(site_f['location']['lat'], site_f['location']['lon'], h, az, el)
             ion_lat.append(lat)
             ion_lon.append(lon)
             ts.append(timestamp)
@@ -122,7 +121,6 @@ def sort(ISS_lat_rad, ISS_lon_rad, df_gc, **kwargs):
     a,b = [column for column in df]
     df['ionospheric_lat_rad'] = np.deg2rad(df[a])
     df['ionospheric_lon_rad'] = np.deg2rad(df[b])
-    #print(data.loc[df_gc[1]]['lat'], data.loc[df_gc[1]]['lon'])
     df['dlat'] = df.ionospheric_lat_rad-ISS_lat_rad
     df['dlon'] = df.ionospheric_lon_rad-ISS_lon_rad
     df['sin_dlat2'] = np.sin(df.dlat/2)**2
